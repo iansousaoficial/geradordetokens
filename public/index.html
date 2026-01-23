@@ -1,167 +1,167 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Painel • Enviar Assets</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gerador de Tokens | Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#050807;
+      --card:rgba(15,20,17,.9);
+      --accent:#8bc34a;
+      --accent-light:#c9e265;
+      --border:rgba(139,195,74,.25);
+      --text:#f1f8e9;
+      --muted:#b2df8a;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{
+      font-family:'Space Grotesk',sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:40px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:2.5rem;
+      max-width:520px;
+      width:100%;
+      box-shadow:0 0 40px rgba(0,0,0,.4);
+    }
+    h1{
+      font-family:'Orbitron';
+      font-size:1.8rem;
+      text-align:center;
+      margin-bottom:2rem;
+      background:linear-gradient(90deg,var(--accent),var(--accent-light));
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    label{
+      font-weight:600;
+      display:block;
+      margin-bottom:0.4rem;
+      color:var(--muted);
+    }
+    input, select{
+      width:100%;
+      padding:0.9rem 1rem;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:#0b120f;
+      color:var(--text);
+      margin-bottom:1.2rem;
+      font-size:1rem;
+    }
+    button{
+      width:100%;
+      padding:1rem;
+      border:none;
+      border-radius:50px;
+      font-weight:700;
+      cursor:pointer;
+      font-size:1rem;
+      background:linear-gradient(135deg,var(--accent),#689f38);
+      color:#000;
+      transition:.25s;
+    }
+    button:hover{transform:translateY(-2px)}
+    .result{
+      margin-top:1.5rem;
+      background:#0b120f;
+      border:1px dashed var(--border);
+      border-radius:16px;
+      padding:1rem;
+      text-align:center;
+    }
+    .token{
+      font-size:1.2rem;
+      font-weight:700;
+      letter-spacing:2px;
+      margin-bottom:0.5rem;
+      color:var(--accent-light);
+      word-break:break-all;
+    }
+    .copy{
+      margin-top:0.6rem;
+      background:none;
+      border:1px solid var(--border);
+      color:var(--accent);
+      padding:0.4rem 1rem;
+      border-radius:50px;
+      font-size:0.85rem;
+      cursor:pointer;
+    }
+    .copy:hover{background:rgba(139,195,74,.1)}
+    .footer{
+      text-align:center;
+      margin-top:1.5rem;
+      font-size:0.8rem;
+      color:var(--muted);
+    }
+  </style>
 </head>
+<body>
 
-<body class="min-h-screen bg-zinc-950 text-zinc-100">
-  <main class="mx-auto max-w-2xl px-4 py-10">
-    <header class="mb-8">
-      <h1 class="text-3xl font-semibold tracking-tight">Enviar assets por e-mail</h1>
-      <p class="mt-2 text-zinc-400">
-        Página interna para disparar e-mails sem abrir o Gmail.
-      </p>
-      <div class="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-200">
-        ⚠️ Dica: proteja essa página com senha/login ou pelo menos um “token” no backend.
+  <div class="panel">
+    <h1>Gerador de Tokens</h1>
+
+    <label>Validade do token (em dias)</label>
+    <input type="number" id="days" value="7" min="1" />
+
+    <label>Tamanho do token</label>
+    <select id="length">
+      <option value="8">8 caracteres</option>
+      <option value="10">10 caracteres</option>
+      <option value="12" selected>12 caracteres</option>
+      <option value="16">16 caracteres</option>
+    </select>
+
+    <button onclick="gerar()">Gerar Token</button>
+
+    <div id="output"></div>
+
+    <div class="footer">Uso interno • Tokens únicos e temporários</div>
+  </div>
+
+<script>
+  function gerar(){
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const length = parseInt(document.getElementById('length').value);
+    const days = parseInt(document.getElementById('days').value);
+
+    let token = '';
+    for(let i=0;i<length;i++){
+      token += chars.charAt(Math.floor(Math.random()*chars.length));
+    }
+
+    const expira = new Date();
+    expira.setDate(expira.getDate() + days);
+
+    const validade = expira.toLocaleDateString('pt-BR');
+
+    document.getElementById('output').innerHTML = `
+      <div class="result">
+        <div class="token">${token}</div>
+        <div>Expira em: <strong>${validade}</strong></div>
+        <button class="copy" onclick="copiar('${token}')">Copiar token</button>
       </div>
-    </header>
+    `;
+  }
 
-    <section class="rounded-2xl border border-white/10 bg-white/5 p-6">
-      <form id="sendForm" class="space-y-4">
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1 block text-sm text-zinc-200" for="clientEmail">E-mail do cliente</label>
-            <input id="clientEmail" type="email" required placeholder="cliente@exemplo.com"
-              class="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 outline-none focus:border-white/20" />
-          </div>
+  function copiar(texto){
+    navigator.clipboard.writeText(texto);
+    alert('Token copiado!');
+  }
+  
+</script>
 
-          <div>
-            <label class="mb-1 block text-sm text-zinc-200" for="clientName">Nome (opcional)</label>
-            <input id="clientName" type="text" placeholder="Ex: João"
-              class="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 outline-none focus:border-white/20" />
-          </div>
-        </div>
-
-        <div class="grid gap-4 sm:grid-cols-2">
-          <div>
-            <label class="mb-1 block text-sm text-zinc-200" for="asset">Asset</label>
-            <select id="asset" required
-              class="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 outline-none focus:border-white/20">
-              <option value="" selected disabled>Selecione um asset…</option>
-              <option value="pack1">Pack 1 • Overlay Twitch</option>
-              <option value="pack2">Pack 2 • Templates Discord</option>
-              <option value="pack3">Pack 3 • Ícones + Banners</option>
-            </select>
-            <p class="mt-2 text-xs text-zinc-500">
-              Depois você troca isso pra vir do seu banco/JSON.
-            </p>
-          </div>
-
-          <div>
-            <label class="mb-1 block text-sm text-zinc-200" for="orderId">ID do pedido (opcional)</label>
-            <input id="orderId" type="text" placeholder="MP-123456 / PATR-98765"
-              class="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 outline-none focus:border-white/20" />
-          </div>
-        </div>
-
-        <div>
-          <label class="mb-1 block text-sm text-zinc-200" for="note">Mensagem extra (opcional)</label>
-          <textarea id="note" rows="4" placeholder="Ex: Obrigado pela compra! Qualquer dúvida, responde esse e-mail."
-            class="w-full resize-none rounded-xl border border-white/10 bg-zinc-950/60 px-4 py-3 outline-none focus:border-white/20"></textarea>
-        </div>
-
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <button id="sendBtn" type="submit"
-            class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-400 px-5 py-3 font-semibold text-zinc-950 transition hover:bg-emerald-300 disabled:opacity-60">
-            <span id="btnText">Enviar e-mail</span>
-            <svg id="spinner" class="hidden h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"></path>
-            </svg>
-          </button>
-
-          <div class="text-xs text-zinc-500">
-            Envio via provedor (Resend/SendGrid/SES) — não usa Gmail manualmente.
-          </div>
-        </div>
-
-        <div id="statusBox" class="hidden rounded-xl border border-white/10 bg-zinc-950/40 p-4 text-sm">
-          <p id="statusText" class="text-zinc-200"></p>
-        </div>
-      </form>
-    </section>
-  </main>
-
-  <script>
-    // ✅ Troque pela sua rota real (FastAPI/Node)
-    const API_ENDPOINT = "https://geradordetokens.vercel.app/api/admin/enviar-asset";
-
-    const form = document.getElementById("sendForm");
-    const sendBtn = document.getElementById("sendBtn");
-    const btnText = document.getElementById("btnText");
-    const spinner = document.getElementById("spinner");
-
-    const statusBox = document.getElementById("statusBox");
-    const statusText = document.getElementById("statusText");
-
-    const clientEmail = document.getElementById("clientEmail");
-    const clientName = document.getElementById("clientName");
-    const asset = document.getElementById("asset");
-    const orderId = document.getElementById("orderId");
-    const note = document.getElementById("note");
-
-    function setLoading(v) {
-      sendBtn.disabled = v;
-      spinner.classList.toggle("hidden", !v);
-      btnText.textContent = v ? "Enviando..." : "Enviar e-mail";
-    }
-
-    function showStatus(message, type = "info") {
-      statusBox.classList.remove("hidden");
-
-      statusBox.classList.remove("border-emerald-400/30", "border-red-400/30");
-      statusText.className = "text-zinc-200";
-
-      if (type === "success") {
-        statusBox.classList.add("border-emerald-400/30");
-        statusText.className = "text-emerald-200";
-      } else if (type === "error") {
-        statusBox.classList.add("border-red-400/30");
-        statusText.className = "text-red-200";
-      }
-
-      statusText.textContent = message;
-    }
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      statusBox.classList.add("hidden");
-      setLoading(true);
-
-      try {
-        const payload = {
-          to_email: clientEmail.value.trim(),
-          to_name: clientName.value.trim() || null,
-          asset_id: asset.value,
-          order_id: orderId.value.trim() || null,
-          note: note.value.trim() || null,
-          source: "admin-panel"
-        };
-
-        const res = await fetch(API_ENDPOINT, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          showStatus(data?.detail || data?.message || "Falha ao enviar.", "error");
-          return;
-        }
-
-        showStatus("E-mail enviado com sucesso ✅", "success");
-        form.reset();
-      } catch (err) {
-        showStatus("Erro de conexão com o servidor.", "error");
-      } finally {
-        setLoading(false);
-      }
-    });
-  </script>
 </body>
 </html>
