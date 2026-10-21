@@ -19,3 +19,4 @@ Ideal para:
 - Suporta diferentes alfabetos (hex, alfanumérico, base64-url, etc.)
 - Modo CLI e modo biblioteca
 - Zero dependências externas (em algumas implementações)
+- testando
